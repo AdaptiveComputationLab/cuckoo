@@ -19,16 +19,17 @@ class ioutil(threading.Thread, Auxiliary):
 
     def start(self):
 
-        config = ["\PhysicalDisk(0 C:)\Disk Read Bytes/sec",
-                  "\PhysicalDisk(0 C:)\Disk Write Bytes/sec"]
+        config = ["\Memory\Committed Bytes",
+                  "\Memory\Available Bytes",
+                  "\Memory\Cache Bytes"]
         counters_string = ' '.join("\"%s\""%c for c in config)
         command = "typeperf -si {si} -sc {sc} -f CSV -y -o {o} {counters}".format(**{"si": self.interval,
-                                                                "sc": self.samples,
-                                                                "o": self.output,
+                                                                "sc":self.samples,
+                                                                "o":self.output,
                                                                 "counters": counters_string})
         # Start process monitor in the background.
         subprocess.Popen(command, shell="True")
 
     def stop(self):
         # Upload the CSV file to the host.
-        upload_to_host(self.output, os.path.join("shots", "diskutil.csv"))
+        upload_to_host(self.output, os.path.join("shots", "memutil.csv"))

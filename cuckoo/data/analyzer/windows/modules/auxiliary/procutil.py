@@ -1,7 +1,6 @@
 import os.path
 import subprocess
 import threading
-import time
 
 from lib.common.abstracts import Auxiliary
 from lib.common.results import upload_to_host
@@ -38,4 +37,4 @@ class procutil(threading.Thread, Auxiliary):
 
     def stop(self):
         # Upload the CSV file to the host.
-        upload_to_host(self.output, os.path.join("logs", "procutil.csv"))
+        upload_to_host(self.output, os.path.join("shots", "procutil.csv"))
