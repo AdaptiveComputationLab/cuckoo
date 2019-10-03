@@ -31,15 +31,6 @@ class ioutil(threading.Thread, Auxiliary):
         # Start process monitor in the background.
         subprocess.Popen(command, shell="True")
 
-        # wait
-        time.sleep(self.interval*self.samples)
-
-        # Try to avoid race conditions by waiting until at least something
-        # has been written to the log file.
-        while not os.path.exists(self.output) or \
-                not os.path.getsize(self.output):
-            time.sleep(0.1)
-
     def stop(self):
         # Upload the CSV file to the host.
-        upload_to_host(self.output, os.path.join("logs", "diskutil.csv"))
+        upload_to_host(self.output, os.path.join("shots", "diskutil.csv"))
