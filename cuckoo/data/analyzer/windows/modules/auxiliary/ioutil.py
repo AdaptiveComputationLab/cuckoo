@@ -14,17 +14,13 @@ class ioutil(threading.Thread, Auxiliary):
     def init(self):
         bin_path = os.path.join(self.analyzer.path, "bin")
         self.output = os.path.join(bin_path, "disk.csv")
-        self.interval = 2
-        self.samples = 20
 
     def start(self):
 
         config = ["\PhysicalDisk(0 C:)\Disk Read Bytes/sec",
                   "\PhysicalDisk(0 C:)\Disk Write Bytes/sec"]
         counters_string = ' '.join("\"%s\""%c for c in config)
-        command = "typeperf -si {si} -sc {sc} -f CSV -y -o {o} {counters}".format(**{"si": self.interval,
-                                                                "sc": self.samples,
-                                                                "o": self.output,
+        command = "typeperf -f CSV -y -o {o} {counters}".format(**{"o": self.output,
                                                                 "counters": counters_string})
         # Start process monitor in the background.
         subprocess.Popen(command, shell="True")
