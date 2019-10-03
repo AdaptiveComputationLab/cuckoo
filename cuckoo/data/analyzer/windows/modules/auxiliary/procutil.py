@@ -1,9 +1,14 @@
 import os.path
 import subprocess
 import threading
+import time
+import StringIO
+import io
 
 from lib.common.abstracts import Auxiliary
-from lib.common.results import upload_to_host
+from lib.common.results import NetlogFile
+
+TIMEOUT = 2
 
 class procutil(threading.Thread, Auxiliary):
     """Allow procmon to be run on the side."""
@@ -22,7 +27,6 @@ class procutil(threading.Thread, Auxiliary):
             self.process = "*"
 
     def start(self):
-
         config = ["\Process({process})\ID Process",
                 "\Process({process})\% Processor Time"]
         counters_string = ' '.join("\"%s\""%c.format(**{"process": self.process}) for c in config)
@@ -31,6 +35,19 @@ class procutil(threading.Thread, Auxiliary):
         # Start process monitor in the background.
         subprocess.Popen(command, shell="True")
 
-    def stop(self):
-        # Upload the CSV file to the host.
-        upload_to_host(self.output, os.path.join("shots", "procutil.csv"))
+        while self.analyzer.do_run:
+            time.sleep(TIMEOUT)
+
+            with io.open(self.output) as f:
+                tmpio = StringIO.StringIO(f.read())
+                tmpio.seek(0)
+
+                # now upload to host from the StringIO
+                try:
+                    nf = NetlogFile()
+                    nf.init("shots/procutil.csv")
+
+                    for chunk in tmpio:
+                        nf.sock.sendall(chunk)
+                finally:
+                    nf.close()
