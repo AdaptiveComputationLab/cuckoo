@@ -5,7 +5,7 @@ import threading
 from lib.common.abstracts import Auxiliary
 from lib.common.results import upload_to_host
 
-class ioutil(threading.Thread, Auxiliary):
+class memutil(threading.Thread, Auxiliary):
     """Allow typeperf to be run on the side."""
     def __init__(self, options={}, analyzer=None):
         threading.Thread.__init__(self)
