@@ -13,7 +13,7 @@ class memutil(threading.Thread, Auxiliary):
 
     def init(self):
         bin_path = os.path.join(self.analyzer.path, "bin")
-        self.output = os.path.join(bin_path, "disk.csv")
+        self.output = os.path.join(bin_path, "memory.csv")
         self.interval = 2
         self.samples = 20
 
